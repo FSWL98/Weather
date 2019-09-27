@@ -9,12 +9,12 @@
 </head>
 <body>
 <header class="header"><h1>Web-программирование. Лабораторная 1</h1></header>
-<form class="container"><input placeholder="Город" id="city"><button id="search">Поиск</button> </form>
+<form class="container" id="search"><input placeholder="Город" id="city"><button >Поиск</button> </form>
 <script id="template-weather" type="text/template">
-        <h2 class="city-name"><%= city %></h2>
-        <h3 class="time">Временная зона: UTC + <%= timezone%></h3>
-        <div class="info">
-            <h3 class="statement">Погода по состоянию на <%= date %> (время локальное):</h3>
+        <h2><%= city %></h2>
+        <h3>Временная зона: UTC + <%= timezone%></h3>
+        <div>
+            <h3>Погода по состоянию на <%= date %> (время локальное):</h3>
             <ul>
                 <li>Температура: <%= temperature %>&deg;C</li>
                 <li>Скорость ветра: <%= wind %> м/с</li>
@@ -22,6 +22,9 @@
                 <li>Влажность: <%= humidity %>%</li>
             </ul>
         </div>
+</script>
+<script id="template-error" type="text/template">
+    <h2>Ошибка! <%= errorMessage %></h2>
 </script>
 <div id="weather"></div>
 </body>
