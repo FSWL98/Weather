@@ -1,8 +1,8 @@
 window.onload = function () {
     const btn = document.getElementById('search');
-    var city = document.getElementById('city');
-    btn.addEventListener('click', function (ev) {
-        var xhr = new XMLHttpRequest();
+    const city = document.getElementById('city');
+    btn.addEventListener('submit', function (ev) {
+        let xhr = new XMLHttpRequest();
         xhr.open('GET', 'https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/weather?q=' + city.value +
             '&appid=b88ae6b1211078df478d7544a65d22f9', false);
         xhr.onreadystatechange = function () {
@@ -11,13 +11,13 @@ window.onload = function () {
             }
             if (xhr.status === 200) {
                 const response = JSON.parse(xhr.responseText);
-                var temp = Math.round((response.main.temp - 273.15) * 10) / 10,
+                let temp = Math.round((response.main.temp - 273.15) * 10) / 10,
                     timezone = response.timezone / 3600,
                     date = new Date (response.dt * 1000),
                     pressure = response.main.pressure/10,
                     humidity = response.main.humidity,
                     windSpeed = response.wind.speed;
-                var secs = date.getSeconds(),
+                let secs = date.getSeconds(),
                     mins = date.getMinutes(),
                     hours = date.getHours(),
                     day = date.getDate(),
@@ -39,7 +39,7 @@ window.onload = function () {
                     secs = '0' + secs;
                 }
                 date = day + '.' + month + '.' + year + ' ' + hours + ':' + mins + ':' + secs;
-                var template = document.getElementById('template-weather').innerHTML,
+                let template = document.getElementById('template-weather').innerHTML,
                     compiled = _.template(template),
                     html = '';
                 const data = {
@@ -59,7 +59,18 @@ window.onload = function () {
                 ev.preventDefault();
             }
             else {
-                alert('Запрос выполнен с ошибкой: ' + JSON.parse(xhr.responseText).message)
+                if (weather.firstChild)  {
+                    weather.innerHTML = '';
+                }
+                let template = document.getElementById('template-error').innerHTML,
+                    compiled = _.template(template),
+                    html = '';
+                const data = {
+                    errorMessage: JSON.parse(xhr.responseText).message
+                }
+                html += compiled(data);
+                weather.insertAdjacentHTML('beforeend', html);
+                ev.preventDefault();
             }
         };
         xhr.send();
