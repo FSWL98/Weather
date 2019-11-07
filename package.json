@@ -1,0 +1,33 @@
+{
+  "name": "weather",
+  "version": "1.0.0",
+  "description": "Web-programming lab1 semester 7\r # Запуск\r После клонирования репозитория на свой компьютер, для открытия страницы локально достаточно просто заупстить файл index.html\r # Редактирование\r Для стилизации в данной работе использовался препроцессор LESS. В репозитории имеются двай файла со стилями с одинаковым названием: style.less и style.css. Подключен к странице лишь второй, однако стили редактировалися в первом и затем конвертировались во второй. Если Вы хотите поменять стили, то можете делать это либо напрямую в style.css, либо же с использованием более удобного синтаксиса, предоставляемого препроцессором LESS в файле style.less. Однако во втором случае Вам нужно будет преобразовать написанные вами стили в CSS. Для этого сначала нужно установить LESS на Ваш компьютер:\r ```\r npm install -g less\r ```\r После этого запустите команду \r ```\r lessc style.less style.css\r ```\r Весь написанный в style.less код преобразуется в CSS и будет записан в файл style.css, который уже подключен к страничке.",
+  "main": "main.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "@babel/core": "^7.7.2",
+    "@babel/preset-env": "^7.7.1",
+    "@babel/register": "^7.7.0",
+    "babel-polyfill": "^6.26.0",
+    "chai": "^4.2.0",
+    "chai-jquery": "^2.1.0"
+  },
+  "devDependencies": {
+    "mocha": "^6.2.2"
+  },
+  "scripts": {
+    "test": "mocha --require @babel/register"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FSWL98/Weather.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FSWL98/Weather/issues"
+  },
+  "homepage": "https://github.com/FSWL98/Weather#readme"
+}
