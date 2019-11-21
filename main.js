@@ -1,13 +1,11 @@
-function convertFarengeightToCelcius (far) {
+function convertFahrenheitToCelcius (far) {
     return Math.round((far - 273.15) * 10) / 10
 }
 function clearBlock(block) {
     if (block.firstChild) {
         block.innerHTML = '';
     }
-    block.classList.remove('success', 'failed')
 }
-
 function createURLByCityName (cityName) {
     return 'https://cors-anywhere.herokuapp.com/api.openweathermap.org/data/2.5/weather?q=' + cityName +
         '&appid=b88ae6b1211078df478d7544a65d22f9'
@@ -19,12 +17,13 @@ function getDataFromJSON (response, error = false) {
             errorMessage: response.message
         };
     }
-    let temp = convertFarengeightToCelcius(response.main.temp),
+    let temp = convertFahrenheitToCelcius(response.main.temp),
         timezone = response.timezone / 3600,
         date = new Date (response.dt * 1000),
         pressure = response.main.pressure/10,
         humidity = response.main.humidity,
         windSpeed = response.wind.speed;
+    let city = response.name;
     let secs = date.getSeconds(),
         mins = date.getMinutes(),
         hours = date.getHours(),
@@ -54,46 +53,47 @@ function getDataFromJSON (response, error = false) {
         humidity: humidity,
         pressure: pressure,
         temperature: temp,
-        city: city.value
+        city: city
     };
 }
-
-window.onload = function () {
-    const btn = document.getElementById('search');
-    const city = document.getElementById('city');
-    btn.addEventListener('submit', function (ev) {
-        ev.preventDefault();
+function drawElement(response, weather, isError = false) {
+    let template;
+    let compiled;
+    let html;
+    let data;
+    template = !isError ? document.getElementById('template-weather').innerHTML : document.getElementById('template-error').innerHTML;
+    compiled = _.template(template);
+    html = '';
+    data = getDataFromJSON(response, isError);
+    html += compiled(data);
+    weather.insertAdjacentHTML('beforeend', html);
+}
+function makeRequest(city) {
+    return new Promise( (resolve, reject) => {
         let xhr = new XMLHttpRequest();
-        const url = createURLByCityName(city.value)
+        const url = createURLByCityName(city);
+        const weather = document.getElementById('weather')
         xhr.open('GET', url, false);
         xhr.onreadystatechange = function () {
             if (xhr.readyState !== 4) {
                 return;
             }
             clearBlock(weather);
-            let template;
-            let compiled;
-            let html;
-            let data;
             const response = JSON.parse(xhr.responseText);
-            if (xhr.status === 200) {
-                template = document.getElementById('template-weather').innerHTML;
-                compiled = _.template(template);
-                html = '';
-                data = getDataFromJSON(response)
-                weather.classList.add('success')
-            }
-            else {
-                template = document.getElementById('template-error').innerHTML;
-                compiled = _.template(template);
-                html = '';
-                data = getDataFromJSON(response, true)
-                weather.classList.add('failed')
-            }
-            html += compiled(data);
-            weather.insertAdjacentHTML('beforeend', html);
+            if (xhr.status === 200)
+                resolve(response);
+            else
+                reject(response);
+
         };
         xhr.send();
-        city.value = '';
     })
 }
+const btn = document.getElementById('search');
+const city = document.getElementById('city');
+btn.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    makeRequest(city.value).then(response => drawElement(response, document.getElementById('weather'), false))
+        .catch(response => drawElement(response, document.getElementById('weather'), true));
+    city.value = '';
+});
